@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+   <head>
+       <meta charset="utf-8">
+       <title>Title</title>
+       <meta name="description" content="Description">
+       <meta name="author" content="Author">
+       <link rel="stylesheet" href="css/styles.css?v=1.0">
+   </head>
+   <body>
+       <div id="controls">
+           <label id="money">Money: </label>
+       </div>
+       <div id="spinners">
+       </div>
+       <script>
+           var buySpinnerUnlocked = false;
+           var buyAutoSpinnerUnlocked = false;
+           var moneyText = 'Money: ';
+           var curMoney = 5;
+           var numFidgetSpinners = 0;
+           var fidgetSpinnerText = "Fidget Spinner ";
+           var numAutoSpinners = 0;
+           var controlsDiv = document.getElementById("controls");
+           var spinnersDiv = document.getElementById("spinners");
+           var spinnerButtonStyling = "width:150px;height:150px";
+           var rotation = 0;
+           var allSpinners= [];
+
+           function buySpinner() {
+               if(curMoney >= 5 || numFidgetSpinners == 0) {
+                   curMoney -= 5;
+                   numFidgetSpinners += 1;
+
+                   var newSpinner = document.createElement("BUTTON");
+                   newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners;
+                   newSpinner.onclick = onFidgetSpinnerClick;
+                   newSpinner.style.cssText = spinnerButtonStyling;
+                   spinnersDiv.appendChild(newSpinner);
+
+                   allSpinners.push(newSpinner);
+
+                   updateMoneyText();
+               }
+           };
+
+           function triggerAutoSpinners() {
+               for (i = 0; i < allSpinners.length; i++) {
+                   var curSpinner = allSpinners[i];
+                   curSpinner.style.webkitTransform = 'rotate('+rotation+'deg)'; 
+                   curSpinner.style.mozTransform    = 'rotate('+rotation+'deg)'; 
+                   curSpinner.style.msTransform     = 'rotate('+rotation+'deg)'; 
+                   curSpinner.style.oTransform      = 'rotate('+rotation+'deg)'; 
+                   curSpinner.style.transform       = 'rotate('+rotation+'deg)';
+               }       
+
+               rotation += 45;
+               curMoney += numAutoSpinners;
+               updateMoneyText();
+           };
+
+           window.setInterval(function(){
+               triggerAutoSpinners();
+           }, 1000);
+
+           function buyAutoSpinner() {
+               if(curMoney >= 10) {
+                   curMoney -= 10;
+                   numFidgetSpinners += 1;
+                   numAutoSpinners += 1;
+
+                   var newSpinner = document.createElement("BUTTON");
+                   newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners + " AUTO";
+                   newSpinner.style.cssText = spinnerButtonStyling;
+                   spinnersDiv.appendChild(newSpinner);
+
+                   allSpinners.push(newSpinner);
+
+                   updateMoneyText();
+               }
+           };
+
+           function onFidgetSpinnerClick() {
+               curMoney += 1;
+               updateMoneyText();
+
+               if(!buySpinnerUnlocked && curMoney >= 5) {
+                   var buySpinnerButton = document.createElement("BUTTON");
+                   buySpinnerButton.innerHTML = "Buy Spinner";
+                   buySpinnerButton.onclick = buySpinner;
+                   controlsDiv.appendChild(buySpinnerButton);
+                   buySpinnerUnlocked = true;
+               }
+
+               if(!buyAutoSpinnerUnlocked && buySpinnerUnlocked && curMoney >= 10) {
+                   var buyAutoSpinnerButton = document.createElement("BUTTON");
+                   buyAutoSpinnerButton.innerHTML = "Buy Auto Spinner";
+                   buyAutoSpinnerButton.onclick = buyAutoSpinner;
+                   controlsDiv.appendChild(buyAutoSpinnerButton);
+                   buyAutoSpinnerUnlocked = true;
+               }
+           };
+
+           function updateMoneyText() {
+               document.getElementById('money').innerHTML = moneyText + curMoney;
+           };
+
+           buySpinner();
+       </script>
+       <script src="js/scripts.js"></script>
+   </body>
+</html>
