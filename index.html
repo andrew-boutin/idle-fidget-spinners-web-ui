@@ -26,6 +26,7 @@
            var spinnerButtonStyling = "width:150px;height:150px";
            var rotation = 0;
            var allSpinners= [];
+           var colors = [ "#97009F","#094DB5","#00A300","#DA532C","#AF1A3F","#613CBC","#008AD2"];
 
            function buySpinner() {
                if(curMoney >= 5 || numFidgetSpinners == 0) {
@@ -36,6 +37,8 @@
                    newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners;
                    newSpinner.onclick = onFidgetSpinnerClick;
                    newSpinner.style.cssText = spinnerButtonStyling;
+                   var randColor = colors[Math.floor(Math.random() * colors.length)];
+                   newSpinner.style.background = randColor;
                    spinnersDiv.appendChild(newSpinner);
 
                    allSpinners.push(newSpinner);
@@ -47,12 +50,12 @@
            function triggerAutoSpinners() {
                for (i = 0; i < allSpinners.length; i++) {
                    var curSpinner = allSpinners[i];
-                   curSpinner.style.webkitTransform = 'rotate('+rotation+'deg)'; 
-                   curSpinner.style.mozTransform    = 'rotate('+rotation+'deg)'; 
-                   curSpinner.style.msTransform     = 'rotate('+rotation+'deg)'; 
-                   curSpinner.style.oTransform      = 'rotate('+rotation+'deg)'; 
+                   curSpinner.style.webkitTransform = 'rotate('+rotation+'deg)';
+                   curSpinner.style.mozTransform    = 'rotate('+rotation+'deg)';
+                   curSpinner.style.msTransform     = 'rotate('+rotation+'deg)';
+                   curSpinner.style.oTransform      = 'rotate('+rotation+'deg)';
                    curSpinner.style.transform       = 'rotate('+rotation+'deg)';
-               }       
+               }
 
                rotation += 45;
                curMoney += numAutoSpinners;
@@ -72,8 +75,9 @@
                    var newSpinner = document.createElement("BUTTON");
                    newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners + " AUTO";
                    newSpinner.style.cssText = spinnerButtonStyling;
+                   var randColor = colors[Math.floor(Math.random() * colors.length)];
+                   newSpinner.style.background = randColor;
                    spinnersDiv.appendChild(newSpinner);
-
                    allSpinners.push(newSpinner);
 
                    updateMoneyText();
