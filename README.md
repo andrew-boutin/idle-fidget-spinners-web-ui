@@ -18,3 +18,7 @@ Because of this, we have to determine assets, such as `.js` and `.css`, based of
 This means the assets will be loaded correctly when GitHub Pages is hosting the site, but they
 won't be loaded correctly in a development environment by opening the `.html` file in a browser.
 
+### Contributors
+
+- @sythel - styling.
+
