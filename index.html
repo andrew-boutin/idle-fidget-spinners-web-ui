@@ -7,7 +7,8 @@
   <meta name="author" content="Baking Bits Studios">
   <meta name="keywords" content="Idle, Fidget, Spinners, Game">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles.css?v=1.0">
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <script src="js/scripts.js"></script>
 </head>
 <body>
   <div id="controls">
@@ -24,31 +25,29 @@
   var fidgetSpinnerText = "Fidget Spinner ";
   var controlsDiv = document.getElementById("controls");
   var spinnersDiv = document.getElementById("spinners");
-  var spinnerButtonStyling = "width:150px;height:150px";
-  var rotation = 0;
-  var allSpinners= [];
   var allSpinnersState = [];
+  var allAutoSpinners = [];
   var colors = [ "#97009F","#094DB5","#00A300","#DA532C","#AF1A3F","#613CBC","#008AD2"];
-  var spinnerUpdateStep = 200; // 200ms = 1/5s.
-  var rotationStep = 36; // Updates every 1/5 second. 10 Updates at 36 degrees per update should be 360 degree rotation in 2 seconds.
+  var checkAutoSpinnersStep = 100; // Every 100 ms
+
+  window.setInterval(function(){
+      checkAutoSpinners();
+    }, checkAutoSpinnersStep);
+
+  function checkAutoSpinners() {
+    for(i = 0; i < allAutoSpinners.length; i++) {
+      var curAutoSpinner = allAutoSpinners[i];
+      curAutoSpinner.click();
+    }
+  }
 
   function buySpinner() {
     if(curMoney >= 5 || numFidgetSpinners == 0) {
       curMoney -= 5;
       numFidgetSpinners += 1;
 
-      var newSpinner = document.createElement("BUTTON");
-      newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners;
-      newSpinner.addEventListener("click", function(){
-        var spinnerNumber = Number(newSpinner.innerHTML.split(" ")[2]);
-        onFidgetSpinnerClick(spinnerNumber);
-      });
-      newSpinner.style.cssText = spinnerButtonStyling;
-      var randColor = colors[Math.floor(Math.random() * colors.length)];
-      newSpinner.style.background = randColor;
-      spinnersDiv.appendChild(newSpinner);
+      var newRegularSpinner = createNewBaseSpinner();
 
-      allSpinners.push(newSpinner);
       allSpinnersState.push(false);
 
       updateMoneyText();
@@ -57,77 +56,82 @@
 
   function checkForUnlocks() {
     if(!buySpinnerUnlocked && curMoney >= 5) {
-      var buySpinnerButton = document.createElement("BUTTON");
-      buySpinnerButton.innerHTML = "Buy Spinner";
-      buySpinnerButton.onclick = buySpinner;
-      controlsDiv.appendChild(buySpinnerButton);
+      addNewButtonControl("Buy Spinner", buySpinner);
       buySpinnerUnlocked = true;
     }
 
     if(!buyAutoSpinnerUnlocked && buySpinnerUnlocked && curMoney >= 10) {
-      var buyAutoSpinnerButton = document.createElement("BUTTON");
-      buyAutoSpinnerButton.innerHTML = "Buy Auto Spinner";
-      buyAutoSpinnerButton.onclick = buyAutoSpinner;
-      controlsDiv.appendChild(buyAutoSpinnerButton);
+      addNewButtonControl("Buy Auto Spinner", buyAutoSpinner);
       buyAutoSpinnerUnlocked = true;
     }
   };
 
-  function updateSpinners() {
-    for (i = 0; i < allSpinners.length; i++) {
-      if(allSpinnersState[i] == true) {
-
-        var curSpinner = allSpinners[i];
-        var curRotation = getCurrentRotationFixed(curSpinner);
-        var nextRotation = curRotation + rotationStep;
-        curSpinner.style.webkitTransform = 'rotate(' + nextRotation + 'deg)';
-        curSpinner.style.mozTransform    = 'rotate(' + nextRotation + 'deg)';
-        curSpinner.style.msTransform     = 'rotate(' + nextRotation + 'deg)';
-        curSpinner.style.oTransform      = 'rotate(' + nextRotation + 'deg)';
-        curSpinner.style.transform       = 'rotate(' + nextRotation + 'deg)';
-
-        // Only add money for a complete rotation of a spinner
-        if(nextRotation == 360 || nextRotation == 0) {
-          curMoney += 1;
-
-          if(curSpinner.innerHTML.split(" ").length == 3){
-            allSpinnersState[i] = false;
-          }
-        }
-      }
-    }
-
-    rotation += rotationStep;
-
-    checkForUnlocks();
-
-    updateMoneyText();
+  function addNewButtonControl(name, onclick) {
+    var newButton = document.createElement("BUTTON");
+    newButton.innerHTML = name;
+    newButton.onclick = onclick;
+    controlsDiv.appendChild(newButton);
   };
-
-  window.setInterval(function(){
-    updateSpinners();
-  }, spinnerUpdateStep); // Every 1/5 second
 
   function buyAutoSpinner() {
     if(curMoney >= 10) {
       curMoney -= 10;
       numFidgetSpinners += 1;
 
-      var newSpinner = document.createElement("BUTTON");
-      newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners + " AUTO";
-      newSpinner.style.cssText = spinnerButtonStyling;
-      var randColor = colors[Math.floor(Math.random() * colors.length)];
-      newSpinner.style.background = randColor;
-      spinnersDiv.appendChild(newSpinner);
-      allSpinners.push(newSpinner);
-      allSpinnersState.push(true);
+      var newAutoSpinner = createNewBaseSpinner();
+      newAutoSpinner.innerHTML += " AUTO";
+      allSpinnersState.push(false);
 
+      allAutoSpinners.push(newAutoSpinner);
       updateMoneyText();
     }
   };
 
-  function onFidgetSpinnerClick(fidgetSpinnerNumber) {
-    allSpinnersState[fidgetSpinnerNumber - 1] = true;
+  function createNewBaseSpinner() {
+    var newSpinner = document.createElement("BUTTON");
+    newSpinner.id = numFidgetSpinners
+    newSpinner.innerHTML = fidgetSpinnerText + numFidgetSpinners
+    var randColor = colors[Math.floor(Math.random() * colors.length)];
+    newSpinner.style.background = randColor;
+    spinnersDiv.appendChild(newSpinner);
+
+    newSpinner.addEventListener("transitionend", function(){
+      onSpinnerTransitionEnd(newSpinner);
+    });
+
+    newSpinner.addEventListener("click", function(){
+      onFidgetSpinnerClick(newSpinner);
+    });
+
+    return newSpinner;
+  };
+
+  function onSpinnerTransitionEnd(curSpinner) {
+    // Add money
+    curMoney += 1;
+
+    checkForUnlocks();
+    updateMoneyText();
+
+    curSpinner.className = "snapBack";
+
+    // Reset the spinner state so it can spin again
+    allSpinnersState[getSpinnerNumber(curSpinner) - 1] = false;
+  };
+
+
+  function getSpinnerNumber(spinner) {
+    return Number(spinner.id);
+  }
+
+  function onFidgetSpinnerClick(curSpinner) {
+    var spinnerIndex = getSpinnerNumber(curSpinner) - 1;
+    // Check if the spinner can start spinning
+    if(allSpinnersState[spinnerIndex] == false) {
+      allSpinnersState[spinnerIndex] = true;
+      curSpinner.className = "spinBoi";
+      //curSpinner.style.transform = 'rotate(360deg)';
+    }
   };
 
   function updateMoneyText() {
@@ -168,6 +172,5 @@
 
   buySpinner();
   </script>
-  <script src="/scripts.js"></script>
 </body>
 </html>

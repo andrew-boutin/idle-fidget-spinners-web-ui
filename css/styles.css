@@ -1,0 +1,15 @@
+body {
+  background-color: teal;
+}
+#spinners button {
+  vertical-align:top;
+  width: 150px;
+  height: 150px;
+}
+.snapBack {
+  transform: rotate(0deg);
+}
+.spinBoi {
+  transition: transform 2s;
+  transform: rotate(360deg);
+}
