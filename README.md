@@ -10,15 +10,6 @@ Right now this is a static site. Eventually it will be more.
 
 This game is being hosted with GitHub pages.
 
-## Dev Notes
-
-### Site Source
-This site is hosted with GitHub pages which overrides the *Site Source* configuration value.
-Because of this, we have to determine assets, such as `.js` and `.css`, based off of the root directory.
-This means the assets will be loaded correctly when GitHub Pages is hosting the site, but they
-won't be loaded correctly in a development environment by opening the `.html` file in a browser.
-
-### Contributors
+## Contributors
 
 - @sythel - styling.
-
