@@ -1,10 +1,33 @@
 body {
   background-color: teal;
+  font-weight: bold;
+  font-size: 20px;
+}
+#controls {
+  background-color: purple;
+  border: solid;
+  height: 25px;
+  vertical-align: middle;
+}
+#controls button {
+  height:100%;
+  font-size: 20px;
+  font-weight: bold;
+  border-color: black;
+}
+#controls button {
+  height:100%;
+  box-sizing: border-box
+  border: solid;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: green;
 }
 #spinners button {
   vertical-align:top;
   width: 150px;
   height: 150px;
+  border: solid;
 }
 .snapBack {
   transform: rotate(0deg);
