@@ -1,15 +1,17 @@
 # Idle Fidget Spinners Web UI
 
-[Play Game](https://andrew-boutin.github.io/idle-fidget-spinners-web-ui/).
+A classic idle progression game where you collect and spin fidget spinners to gain money. See how far you can get.
 
-A classic idle game where you collect and spin fidget spinners to gain money. See how far you can get.
+This is a static site hosted with GitHub pages.
 
-Right now this is a static site. Eventually it will be more.
+[Play](https://andrew-boutin.github.io/idle-fidget-spinners-web-ui/) now!
 
-## Hosting
-
-This game is being hosted with GitHub pages.
+![Idle Fidget Spinners Gif](docs/idle.gif)
 
 ## Contributors
 
 - @sythel - styling.
+
+---
+
+Check out my [personal site](https://andrewboutin.com)!
